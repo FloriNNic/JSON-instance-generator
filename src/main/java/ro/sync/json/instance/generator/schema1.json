@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": ["array", "object"], 
+    "maxItems": 3,
+    "items": {
+               "type": "integer",
+               "minimum": 0,
+               "maximum": 100
+             },
+    "properties": {
+        "name": { "type": "string", "maxLength": 20, "pattern": "[a-zA-Z ]+" },
+        "age": { "type": "integer", "minimum": 0, "maximum": 100 }
+    },
+    "required": ["name", "age"],
+    "additionalProperties": false
+}

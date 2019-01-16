@@ -1,0 +1,16 @@
+/**
+			 * Validate a JSON content by a JSON schema
+			 */
+			//			  org.everit.json.schema.Visitor visitor = new SchemaValidator();
+			//		        visitor.visit(schema);
+
+			//	  	  JSONObject jsonObject = new JSONObject("{\n" + "	\"rectangle\" : {\n" + "		\"a\" :   4,\n" + "		\"b\" : 5\n" + "	}\n" + "}");
+			//		  JSONObject jsonObject = new JSONObject("{\n" + "  \"firstName\": \"John\",\n" + "  \"lastName\": \"Does\",\n" + "  \"age\": 21\n" + "}");
+			//		  JSONObject jsonObject = new JSONObject("{\n" + "  \"latitude\": 48.858093,\n" + "  \"longitude\": 2.294694\n" + "}");
+			//		  JSONObject jsonObject = new JSONObject("{\n" + "  \"fruits\": [ \"apple\", \"orange\", \"pear\" ],\n" + "  \"vegetables\": [\n" + "    {\n" + "      \"veggieName\": \"potato\",\n" + 
+			//	  		"      \"veggieLike\": true\n" + "    },\n" + "    {\n" + "      \"veggieName\": \"broccoli\",\n" + "      \"veggieLike\": false\n" + "    }\n" + "  ]\n" + "}");
+			//  	  JSONObject jsonObject = new JSONObject("{\n" + "  \"fruits\": [1600, \"Pennsylvania\", \"Avenue\", \"NW\"]}");
+			//		  schema.validate(jsonObject); // throws a ValidationException if this object is invalid
+
+			//		  System.out.println(rawSchema.getJSONObject("properties").getJSONObject("rectangle"));
+			//		  System.out.println(jsonObject);

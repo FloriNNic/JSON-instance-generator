@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "string",
+    "allOf": [
+                {
+                    "minLength": 2, 
+                    "oneOf": [
+                                {"pattern": "^[a-zA-Z][0-9][0-5]*$"}
+                             ]
+                },
+                {
+                    "maxLength": 5, 
+                    "oneOf": [
+                                {"pattern": "^[0-9]*$"},
+                                {"pattern": "^[a-zA-Z]*$"}
+                             ]
+                }
+    ]
+}

@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "definitions": {
+        "person": {
+            "pattern": "^[a-zA-Z ]*$"
+        },
+        "evens": { "type": "number", "multipleOf": 2}
+    }, 
+    "properties": {
+        "title": { "type": "string", 
+                   "allOf": [
+                      {
+                         "oneOf": [
+                             {
+                                 "maxLength": 20, "$ref": "#/definitions/person"
+                             }
+                         ]
+                      }
+                   ]
+                 },
+        "name": { "type": "string","description": "An explanation about the purpose of this instance.", "maxLength": 20,"pattern": "^[a-zA-Z ]*$" },
+        "age": { "type": "number", "minimum": 0, "maximum": 120 }
+    },
+    "required": [ "name", "age" ],
+    "additionalProperties": false 
+}
