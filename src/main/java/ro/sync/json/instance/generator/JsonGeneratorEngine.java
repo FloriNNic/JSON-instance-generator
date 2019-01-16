@@ -17,6 +17,7 @@ public class JsonGeneratorEngine {
 	
 	StringBuilder builder = new StringBuilder();
 	private JsonGeneratorOptions options;
+	
 	private String lastProperty;
 	
 	public JsonGeneratorEngine(JsonGeneratorOptions options) {
