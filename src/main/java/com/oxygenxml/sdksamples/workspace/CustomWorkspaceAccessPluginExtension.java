@@ -45,10 +45,10 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 		   */
 		  @Override
 		  public void customizeMainMenu(JMenuBar mainMenuBar) {
-			  JMenu myMenu = new JMenu("My menu");
+			  JMenu myMenu = new JMenu("MyMenu");
 			  myMenu.add(selectionSourceAction);
 			  // Add your menu before the Help menu
-			  mainMenuBar.add(myMenu, mainMenuBar.getMenuCount() - 1);
+			  mainMenuBar.add(myMenu, mainMenuBar.getMenuCount() - 2);
 		  }
 	  });
 
@@ -93,14 +93,16 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 	 * @return The "Show Selection" action
 	 */
 	@SuppressWarnings("serial")
-	private AbstractAction createShowSelectionAction(
-			final StandalonePluginWorkspace pluginWorkspaceAccess) {
+	private AbstractAction createShowSelectionAction(final StandalonePluginWorkspace pluginWorkspaceAccess) {
 		return new AbstractAction("Generate sample JSON files") {
 			@Override
 			public void actionPerformed(ActionEvent actionevent) {
-				OKCancelDialog dialog = new JsonInstanceGeneratorDialog();
-				dialog.setDefaultCloseOperation(OKCancelDialog.DISPOSE_ON_CLOSE);
-				dialog.setVisible(true);
+				JsonInstanceGeneratorDialog dialog = new JsonInstanceGeneratorDialog();
+		    	dialog.setDefaultCloseOperation(OKCancelDialog.DISPOSE_ON_CLOSE);
+		    	dialog.setVisible(true);
+		    	if (dialog.getResult() == OKCancelDialog.RESULT_OK) {
+		    		dialog.createInstance();
+		    	}
 			}
 		};
 	}

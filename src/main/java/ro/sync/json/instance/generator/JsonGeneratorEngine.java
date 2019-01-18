@@ -1,5 +1,6 @@
 package ro.sync.json.instance.generator;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.regex.Pattern;
 import org.everit.json.schema.*;
 import org.everit.json.schema.CombinedSchema.ValidationCriterion;
 import org.everit.json.schema.regexp.Regexp;
+import org.w3c.dom.css.ElementCSSInlineStyle;
 
 import com.mifmif.common.regex.Generex;
 
@@ -68,7 +70,6 @@ public class JsonGeneratorEngine {
     	} else if (schema instanceof CombinedSchema) {
     		visitCombinedSchema((CombinedSchema) schema);
     	} 
-    	
     	// TODO Handle all schemas.
     }
     
@@ -78,13 +79,6 @@ public class JsonGeneratorEngine {
      * @param numberSchema schema to visit
      */
     void visitNumberSchema(NumberSchema numberSchema) {
-        visitExclusiveMinimum(numberSchema.isExclusiveMinimum());
-        visitMinimum(numberSchema.getMinimum());
-        visitExclusiveMinimumLimit(numberSchema.getExclusiveMinimumLimit());
-        
-        visitExclusiveMaximum(numberSchema.isExclusiveMaximum());
-        visitMaximum(numberSchema.getMaximum());
-        visitExclusiveMaximumLimit(numberSchema.getExclusiveMaximumLimit());
         visitMultipleOf(numberSchema.getMultipleOf());
         
         int minimum = (numberSchema.getMinimum() != null) ? numberSchema.getMinimum().intValue() : 0;
@@ -103,13 +97,11 @@ public class JsonGeneratorEngine {
      */
     void visitArraySchema(ArraySchema arraySchema) {
     	// get minimum and maximum number of items the schema can contain
-        visitMinItems(arraySchema.getMinItems());
-        Number minimum = arraySchema.getMinItems();
-        visitMaxItems(arraySchema.getMaxItems());
-        Number maximum = arraySchema.getMaxItems();
+        Number minimum = arraySchema.getMinItems() != null ? arraySchema.getMinItems() : 2;
+        Number maximum = arraySchema.getMaxItems() != null ? arraySchema.getMaxItems() : 10;
         
         String lastPropertyName = lastProperty;
-        int numberOfItems = options.isGenerateRandomValues() ? getRandomNumberBetween (minimum, maximum) : 2;
+        int numberOfItems = options.isGenerateRandomValues() ? getRandomNumberBetween (minimum, maximum) : minimum.intValue();
         
         visitUniqueItems(arraySchema.needsUniqueItems());
         builder.append("[");
@@ -135,7 +127,7 @@ public class JsonGeneratorEngine {
         builder.append("]");
    
         visitSchemaOfAdditionalItems(arraySchema.getSchemaOfAdditionalItems());
-        visitContainedItemSchema(arraySchema.getContainedItemSchema());
+        //visitContainedItemSchema(arraySchema.getContainedItemSchema());
     }
     /**
      * Visit the schema that is referred in the main schema definition.
@@ -152,8 +144,6 @@ public class JsonGeneratorEngine {
     private void visitObjectSchema(ObjectSchema objectSchema) {
     	builder.append("{");
         visitPropertyNameSchema(objectSchema.getPropertyNameSchema());
-        visitMinProperties(objectSchema.getMinProperties());
-        visitMaxProperties(objectSchema.getMaxProperties());
         for (Map.Entry<String, Set<String>> entry : objectSchema.getPropertyDependencies().entrySet()) {
             visitPropertyDependencies(entry.getKey(), entry.getValue());
         }
@@ -175,7 +165,7 @@ public class JsonGeneratorEngine {
         builder.append("}");
     }
     /**
-     * 
+     * Appends the property name and visits schema if not empty.
      * @param propertyName
      * @param schema
      */
@@ -196,20 +186,26 @@ public class JsonGeneratorEngine {
      */
     void visitStringSchema(StringSchema stringSchema) {
     	// get minimum and maximum length the schema can have
-    	visitMinLength(stringSchema.getMinLength());
-        Number minLenght = stringSchema.getMinLength();
-        visitMaxLength(stringSchema.getMaxLength());
-        Number maxLenght = stringSchema.getMaxLength();
+        Number minLenght = stringSchema.getMinLength() != null ? stringSchema.getMinLength() : 2;
+        Number maxLenght = stringSchema.getMaxLength() != null ? stringSchema.getMaxLength() : 10;
         
         builder.append(" \"");
-        builder.append(options.isGenerateRandomValues() ? generateRandomString(getRandomNumberBetween(minLenght, maxLenght)) : lastProperty);
+        
+        // visit format if defined
+        if (stringSchema.getFormatValidator().formatName() != "unnamed-format") {
+        	visitFormat(stringSchema.getFormatValidator());
+        } else {
+        	builder.append(options.isGenerateRandomValues() ? generateRandomString(getRandomNumberBetween(minLenght, maxLenght)) : lastProperty);
+        }
+        
         builder.append("\"");
         
         System.out.println(stringSchema.getPattern());
+        
+        // visit pattern if defined
         if (stringSchema.getPattern() != null) {
         	visitPattern(stringSchema.getPattern(), minLenght, maxLenght);
         }
-        //visitFormat(stringSchema.getFormatValidator());
     }
     
     /**
@@ -217,8 +213,8 @@ public class JsonGeneratorEngine {
      * @param enumSchema schema to visit
      */
     void visitEnumSchema(EnumSchema enumSchema) {
-    	int randomIndex = getRandomNumberBetween(1, enumSchema.getPossibleValues().size());
-    	int index = 1;
+    	int randomIndex = new Random().nextInt(enumSchema.getPossibleValues().size());
+    	int index = 0;
     	for(Object possibleValue : enumSchema.getPossibleValues()) {
 	    	if (index++ == randomIndex || !options.isGenerateRandomValues()) {
 	    		builder.append(" \"").append(possibleValue).append("\"");
@@ -254,8 +250,33 @@ public class JsonGeneratorEngine {
     void visitRequiredPropertyName(String requiredPropName) {
     }
 
+    /**
+     * Appends a string that fits one of the formats described by the validator.
+     * @param formatValidator used to get the formatName
+     */
     void visitFormat(FormatValidator formatValidator) {
-    	System.out.println(formatValidator.formatName());
+    	if (formatValidator.formatName() == "email") {
+    		builder.append (options.isGenerateRandomValues() ? generateRandomString(10).toLowerCase() : "example" + "@domain.com");
+    	} else if (formatValidator.formatName() == "date-time") {
+    		LocalDateTime dateTime;
+    		if (options.isGenerateRandomValues()) {
+    			Random r = new Random();
+        		dateTime = LocalDateTime.of(r.nextInt(2020)+100, r.nextInt(12)+1, r.nextInt(30)+1, r.nextInt(23), r.nextInt(59));
+    		} else {
+    			dateTime = LocalDateTime.of(2000, 1, 1, 0, 0);
+    		}
+    		builder.append(dateTime);
+    	} else if (formatValidator.formatName() == "hostname") {
+    		builder.append("www");
+    	} else if (formatValidator.formatName() == "uri") {
+    		builder.append("http://example.com/resource?foo=bar#fragment");
+    	} else if (formatValidator.formatName() == "ipv4") {
+    		Random r = new Random();
+    		builder.append(r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256));
+    	} else if (formatValidator.formatName() == "ipv6") {
+    		Random r = new Random();
+    		builder.append(r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256));
+    	}
     }
 
     void visitPattern(Pattern pattern, Number minLength, Number maxLenth) {
@@ -275,27 +296,21 @@ public class JsonGeneratorEngine {
     	System.out.println(randomStringToMatch + " FROM PATTERN " + pattern.toString() );// a random value from the previous String list
     }
 
-    void visitMaxLength(Integer maxLength) {
-    }
-
-    void visitMinLength(Integer minLength) {
-    }
-
     void visitCombinedSchema(CombinedSchema combinedSchema) {
     	ValidationCriterion criterion = combinedSchema.getCriterion();
 		System.out.println("criterion: " +criterion);
 		Collection<Schema> subschemas = combinedSchema.getSubschemas();
 		System.out.println(subschemas.size());
 		
-		for (Schema subschema : subschemas) {
-			System.out.println("Subschema: " + subschema);
-			System.out.println(subschema.getClass());
-			visit(subschema);
-			System.out.println("Builder so far: " + builder.toString());
-			
-			if(criterion == CombinedSchema.ANY_CRITERION || criterion == CombinedSchema.ONE_CRITERION || subschema instanceof EnumSchema) {
-				break;
+		if (criterion == CombinedSchema.ALL_CRITERION) {
+			for (Schema subschema : subschemas) {
+				System.out.print(subschema.getClass() + " ");
+				if (subschema instanceof EnumSchema) {
+					visit(subschema);
+				}
 			}
+		} else {
+			visit(subschemas.iterator().next());
 		}
     }
 
@@ -338,7 +353,7 @@ public class JsonGeneratorEngine {
     void visitContainedItemSchema(Schema containedItemSchema) {
     	visit(containedItemSchema);
     }
-
+    
     void visitBooleanSchema(BooleanSchema schema) {
     	builder.append(options.isGenerateRandomValues() ? new Random().nextBoolean() : false);
     }
@@ -358,24 +373,6 @@ public class JsonGeneratorEngine {
     void visitNotSchema(NotSchema notSchema) {
     }
     
-    void visitMinimum(Number minimum) {
-    }
-
-    void visitExclusiveMinimum(boolean exclusiveMinimum) {
-    }
-
-    void visitExclusiveMinimumLimit(Number exclusiveMinimumLimit) {
-    }
-
-    void visitMaximum(Number maximum) {
-    }
-
-    void visitExclusiveMaximum(boolean exclusiveMaximum) {
-    }
-
-    void visitExclusiveMaximumLimit(Number exclusiveMaximumLimit) {
-    }
-
     void visitMultipleOf(Number multipleOf) {
     }
     

@@ -24,6 +24,7 @@ public class JsonInstanceGenerator {
 		jsonGenerator.visit(schema);
 		JSONObject jsonObj = new JSONObject(jsonGenerator.builder.toString());
 		String generatedJSON = jsonObj.toString(4);
+		System.out.println("JSON to write:\n "+ generatedJSON);
 		return generatedJSON;
 	}
 
@@ -51,7 +52,7 @@ public class JsonInstanceGenerator {
 	}
 
 	public static void main(String[] args) throws IOException {
-		try (InputStream inputStream = JsonInstanceGenerator.class.getResourceAsStream("schema1.json")) {
+		try (InputStream inputStream = JsonInstanceGenerator.class.getResourceAsStream("multiple.json")) {
 			JsonGeneratorOptions options = new JsonGeneratorOptions();  
 			options.setGenerateRandomValues(false);
 			System.out.println("Ugly string: " + generateUgly(inputStream, options));
