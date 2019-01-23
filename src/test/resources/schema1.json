@@ -3,7 +3,7 @@
     "type": "object",
     "definitions": {
         "person": {
-            "pattern": "^[a-zA-Z ]*$"
+            "pattern": "^[a-zA-Z]*$"
         },
         "evens": { "type": "number", "multipleOf": 2}
     }, 
@@ -19,7 +19,7 @@
                       }
                    ]
                  },
-        "name": { "type": "string","description": "An explanation about the purpose of this instance.", "maxLength": 20,"pattern": "^[a-zA-Z ]*$" },
+        "name": { "type": "string","description": "An explanation about the purpose of this instance.", "maxLength": 20 },
         "age": { "type": "number", "minimum": 0, "maximum": 120 }
     },
     "required": [ "name", "age" ],

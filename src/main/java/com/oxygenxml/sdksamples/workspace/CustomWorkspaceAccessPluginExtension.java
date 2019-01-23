@@ -26,7 +26,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
   /**
    * @see ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension#applicationStarted(ro.sync.exml.workspace.api.standalone.StandalonePluginWorkspace)
    */
-  @Override
   public void applicationStarted(final StandalonePluginWorkspace pluginWorkspaceAccess) {
 	  //You can set or read global options.
 	  //The "ro.sync.exml.options.APIAccessibleOptionTags" contains all accessible keys.
@@ -40,10 +39,10 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 
 	  // Create your own main menu and add it to Oxygen or remove one of Oxygen's menus...
 	  pluginWorkspaceAccess.addMenuBarCustomizer(new MenuBarCustomizer() {
+		  
 		  /**
 		   * @see ro.sync.exml.workspace.api.standalone.MenuBarCustomizer#customizeMainMenu(javax.swing.JMenuBar)
 		   */
-		  @Override
 		  public void customizeMainMenu(JMenuBar mainMenuBar) {
 			  JMenu myMenu = new JMenu("MyMenu");
 			  myMenu.add(selectionSourceAction);
@@ -95,7 +94,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 	@SuppressWarnings("serial")
 	private AbstractAction createShowSelectionAction(final StandalonePluginWorkspace pluginWorkspaceAccess) {
 		return new AbstractAction("Generate sample JSON files") {
-			@Override
 			public void actionPerformed(ActionEvent actionevent) {
 				JsonInstanceGeneratorDialog dialog = new JsonInstanceGeneratorDialog();
 		    	dialog.setDefaultCloseOperation(OKCancelDialog.DISPOSE_ON_CLOSE);
@@ -110,7 +108,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
   /**
    * @see ro.sync.exml.plugin.workspace.WorkspaceAccessPluginExtension#applicationClosing()
    */
-  @Override
   public boolean applicationClosing() {
 	  //You can reject the application closing here
     return true;

@@ -61,7 +61,6 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 20,
-            "pattern": "^[a-zA-Z ]*$",
             "examples": ["John"]
         },
         "linkType": {

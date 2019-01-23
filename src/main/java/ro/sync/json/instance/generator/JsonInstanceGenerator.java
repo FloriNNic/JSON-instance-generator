@@ -52,7 +52,7 @@ public class JsonInstanceGenerator {
 	}
 
 	public static void main(String[] args) throws IOException {
-		try (InputStream inputStream = JsonInstanceGenerator.class.getResourceAsStream("combined.json")) {
+		try (InputStream inputStream = JsonInstanceGenerator.class.getResourceAsStream("combined2.json")) {
 			JsonGeneratorOptions options = new JsonGeneratorOptions();  
 			options.setGenerateRandomValues(false);
 			System.out.println("Ugly string: " + generateUgly(inputStream, options));

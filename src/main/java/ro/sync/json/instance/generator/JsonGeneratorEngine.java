@@ -8,10 +8,24 @@ import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.everit.json.schema.*;
+import org.everit.json.schema.ArraySchema;
+import org.everit.json.schema.BooleanSchema;
+import org.everit.json.schema.CombinedSchema;
 import org.everit.json.schema.CombinedSchema.ValidationCriterion;
+import org.everit.json.schema.ConditionalSchema;
+import org.everit.json.schema.ConstSchema;
+import org.everit.json.schema.EmptySchema;
+import org.everit.json.schema.EnumSchema;
+import org.everit.json.schema.FalseSchema;
+import org.everit.json.schema.FormatValidator;
+import org.everit.json.schema.NotSchema;
+import org.everit.json.schema.NullSchema;
+import org.everit.json.schema.NumberSchema;
+import org.everit.json.schema.ObjectSchema;
+import org.everit.json.schema.ReferenceSchema;
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.StringSchema;
 import org.everit.json.schema.regexp.Regexp;
-import org.w3c.dom.css.ElementCSSInlineStyle;
 
 import com.mifmif.common.regex.Generex;
 
@@ -53,7 +67,9 @@ public class JsonGeneratorEngine {
     		visitBooleanSchema((BooleanSchema) schema);
     	} else if (schema instanceof CombinedSchema) {
     		visitCombinedSchema((CombinedSchema) schema);
-    	} 
+    	} else if (schema instanceof NotSchema) {
+    		visitNotSchema((NotSchema) schema);
+    	}
     	// TODO Handle all schemas.
     }
     /**
@@ -162,16 +178,14 @@ public class JsonGeneratorEngine {
         // visit format if defined
         if (stringSchema.getFormatValidator().formatName() != "unnamed-format") {
         	visitFormat(stringSchema.getFormatValidator());
+        // visit pattern if defined
+        } else if (stringSchema.getPattern() != null) {
+        	visitPattern(stringSchema.getPattern(), minLenght, maxLenght);
         } else {
         	builder.append(options.isGenerateRandomValues() ? generateRandomString(new Random().nextInt(maxLenght) + minLenght) : lastProperty);
         }
         builder.append("\"");
         System.out.println(stringSchema.getPattern());
-        
-        // visit pattern if defined
-        if (stringSchema.getPattern() != null) {
-        	visitPattern(stringSchema.getPattern(), minLenght, maxLenght);
-        }
     }
     /**
      * Visit the schema referred in the main schema definition.
@@ -217,10 +231,17 @@ public class JsonGeneratorEngine {
 		
 		if (criterion == CombinedSchema.ALL_CRITERION) {
 			for (Schema subschema : subschemas) {
-				System.out.print(subschema.getClass() + " ");
-				if (subschema instanceof EnumSchema || subschema instanceof ReferenceSchema) {
+				System.out.println(subschemas.size());
+				System.out.println("allOf " + subschema.getClass());
+				if (subschemas.size() == 1) {
+					if (subschema instanceof StringSchema) {
+						visit(subschema);
+					}
+				} else if (subschema instanceof EnumSchema || subschema instanceof ReferenceSchema || subschema instanceof ObjectSchema || subschema instanceof CombinedSchema) {
 					visit(subschema);
+					System.out.println("VISITED SCHEMA: " + subschema.getClass());
 				}
+				
 			}
 		} else {
 			visit(subschemas.iterator().next());
@@ -281,22 +302,20 @@ public class JsonGeneratorEngine {
     		builder.append(r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256));
     	}
     }
-
-    void visitPattern(Pattern pattern, Number minLength, Number maxLenth) {
-        System.out.println(pattern.pattern());
+    /**
+     * Appends a random string matching a pattern. The special characters {"$","^"} are removed.
+     * @param pattern pattern to match
+     */
+    void visitPattern(Pattern pattern, int minLength, int maxLength) {
     	Generex generex = new Generex(pattern.toString());
-    	String randomStringToMatch = "";
-    	while (randomStringToMatch.length() == 0) {
-    		randomStringToMatch = generex.random();
-    	}
+    	String randomStringToMatch = generex.random(minLength, maxLength);
     	if (randomStringToMatch.startsWith("^")) {
     		randomStringToMatch = randomStringToMatch.substring(1);
     	}
     	if (randomStringToMatch.endsWith("$")) {
     		randomStringToMatch = randomStringToMatch.substring(0, randomStringToMatch.length()-1);
     	}
-    	//builder.append(randomStringToMatch);
-    	System.out.println(randomStringToMatch + " FROM PATTERN " + pattern.toString() );// a random value from the previous String list
+    	builder.append(randomStringToMatch);
     }
 
     void visitConditionalSchema(ConditionalSchema conditionalSchema) {
@@ -356,6 +375,13 @@ public class JsonGeneratorEngine {
     }
 
     void visitNotSchema(NotSchema notSchema) {
+    	System.out.println(notSchema.getMustNotMatch());
+    	Schema mustNotMatch = notSchema.getMustNotMatch();
+    	if (mustNotMatch instanceof StringSchema) {
+    		builder.append(0);
+    	} else if (mustNotMatch instanceof NumberSchema) {
+    		builder.append("example");
+    	}
     }
 
 }

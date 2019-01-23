@@ -1,9 +1,11 @@
 package ro.sync.json.instance.generator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.StringTokenizer;
 
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
@@ -150,7 +152,10 @@ public class JsonInstanceGeneratorTest {
 		assertEquals(expectedJson, generatedJson);
 		performValidation(schemaResource, expectedJson);
 	}
-	
+	/**
+	 * Test ObjectSchema (requiredProperties).
+	 * @throws IOException
+	 */
 	@Test
 	public void test8() throws IOException {
 		String schemaResource = "/schema8.json";
@@ -176,5 +181,24 @@ public class JsonInstanceGeneratorTest {
 		assertEquals(expectedJson, generatedJson);
 		performValidation(schemaResource, expectedJson);
 	}
+	/**
+	 * Test regex generation.
+	 * @throws IOException
+	 */
+	@Test
+	public void test10() throws IOException {
+		String schemaResource = "/schema10.json";
+		InputStream schema = JsonInstanceGeneratorTest.class.getResourceAsStream(schemaResource);
+		JsonGeneratorOptions options = new JsonGeneratorOptions(); 
+		
+		String generatedJson = JsonInstanceGenerator.generate(schema, options);
+		StringTokenizer stk = new StringTokenizer(generatedJson, "{}\": ", false);
+		stk.nextToken();
+		String stringToEvaluate = stk.nextToken();
+		assertTrue(stringToEvaluate.length() == 8 && stringToEvaluate.length() <= 13);
+		performValidation(schemaResource, generatedJson);
+	}
+	
+	
 
 }
