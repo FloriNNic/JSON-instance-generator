@@ -2,26 +2,26 @@ name: Run Validation
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-    inputs:
-      validationDir:
-        description: 'The directory to be validated.'
-        required: true
+#     inputs:
+#       validationDir:
+#         description: 'The directory to be validated.'
+#         required: true
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Oxygen Validation Script
-        uses: oxygenxml/oxygen-scripting-validation-action@v1.1.0
-        env:
-          SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
-        with:
-          validationDir: ${{ github.event.inputs.validationDir }}
+#   validate:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Oxygen Validation Script
+#         uses: oxygenxml/oxygen-scripting-validation-action@v1.1.0
+#         env:
+#           SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
+#         with:
+#           validationDir: ${{ github.event.inputs.validationDir }}
           
   compare:
     runs-on: ubuntu-latest
     steps:
       - name: Comparison Action
-        uses: FloriNNic/oxygen-scripting-comparison-action@v1.0.1
+        uses: FloriNNic/oxygen-scripting-comparison-action@v1.0.2
         env:
           SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
         with:
