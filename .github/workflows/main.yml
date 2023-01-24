@@ -25,6 +25,6 @@ jobs:
         env:
           SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
         with:
-          firstBranchName: master
-          secondBranchName: gh-pages
+          firstBranch: master
+          secondBranch: gh-pages
 
