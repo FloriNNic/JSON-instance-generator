@@ -8,11 +8,11 @@ on:
 jobs:     
   compare:
     runs-on: ubuntu-latest
-    env:
-      SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
     steps:
       - name: Comparison Action
         uses: FloriNNic/oxygen-scripting-comparison-action@v1.0.2
+        env:
+          SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
         with:
           firstBranch: master
           secondBranch: ${{ github.event.pull_request.head.sha }}
