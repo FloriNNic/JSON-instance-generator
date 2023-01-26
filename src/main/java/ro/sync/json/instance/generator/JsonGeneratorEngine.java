@@ -38,6 +38,10 @@ import com.mifmif.common.regex.Generex;
 public class JsonGeneratorEngine {
 	
 	StringBuilder builder = new StringBuilder();
+	
+	/**
+	 * The JSON Generator options.
+	 */
 	private JsonGeneratorOptions options;
 	
 	private String lastProperty;
