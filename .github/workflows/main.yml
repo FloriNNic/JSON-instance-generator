@@ -16,5 +16,5 @@ jobs:
           SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
         with:
           firstBranch: master
-          secondBranch: ${{ github.event.pull_request.head.sha }}
+          secondBranch: gh-pages
 
