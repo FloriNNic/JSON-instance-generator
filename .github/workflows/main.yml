@@ -1,6 +1,6 @@
-name: Run Validation
+name: Run Comparison Script
 on:
-  pull_request:
+  pull_request_target:
     branches: [ "master" ]
     types: [opened, reopened, closed]
   # Allows you to run this workflow manually from the Actions tab
@@ -16,5 +16,5 @@ jobs:
           SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
         with:
           firstBranch: master
-          secondBranch: gh-pages
+          secondBranch: ${{ github.event.pull_request.head.sha }}
 
