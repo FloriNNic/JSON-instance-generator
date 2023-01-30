@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Comparison Action
-        uses: FloriNNic/oxygen-scripting-comparison-action@v1.0.2
+        uses: FloriNNic/oxygen-scripting-comparison-action@v1.0.3
         env:
           SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
         with:
