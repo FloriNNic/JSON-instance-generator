@@ -50,38 +50,6 @@ public class CustomWorkspaceAccessPluginExtension implements WorkspaceAccessPlug
 			  mainMenuBar.add(myMenu, mainMenuBar.getMenuCount() - 2);
 		  }
 	  });
-
-
-//	  pluginWorkspaceAccess.addEditorChangeListener();
-
-//
-//	  //You can use this callback to populate your custom toolbar (defined in the plugin.xml) or to modify an existing Oxygen toolbar 
-//	  // (add components to it or remove them) 
-//	  pluginWorkspaceAccess.addToolbarComponentsCustomizer(new ToolbarComponentsCustomizer() {
-//		  /**
-//		   * @see ro.sync.exml.workspace.api.standalone.ToolbarComponentsCustomizer#customizeToolbar(ro.sync.exml.workspace.api.standalone.ToolbarInfo)
-//		   */
-//		  public void customizeToolbar(ToolbarInfo toolbarInfo) {
-//			  //The toolbar ID is defined in the "plugin.xml"
-//			  if("SampleWorkspaceAccessToolbarID".equals(toolbarInfo.getToolbarID())) {
-//				  List<JComponent> comps = new ArrayList<JComponent>(); 
-//				  JComponent[] initialComponents = toolbarInfo.getComponents();
-//				  boolean hasInitialComponents = initialComponents != null && initialComponents.length > 0; 
-//				  if (hasInitialComponents) {
-//					  // Add initial toolbar components
-//					  for (JComponent toolbarItem : initialComponents) {
-//						  comps.add(toolbarItem);
-//					  }
-//				  }
-//				  
-//				  //Add your own toolbar button using our "ro.sync.exml.workspace.api.standalone.ui.ToolbarButton" API component
-//				  ToolbarButton customButton = new ToolbarButton(selectionSourceAction, true);
-//				  comps.add(customButton);
-//				  toolbarInfo.setComponents(comps.toArray(new JComponent[0]));
-//			  } 
-//		  }
-//	  });
-
 	  
   }
 
