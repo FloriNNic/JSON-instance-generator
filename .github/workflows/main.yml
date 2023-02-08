@@ -1,20 +1,20 @@
 name: Run Comparison Script
 on:
-  pull_request_target:
+  push:
     branches: [ "master" ]
-    types: [opened, reopened, closed]
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   
 jobs:     
   compare:
     runs-on: ubuntu-latest
     steps:
-      - name: Oxygen Comparison Action
-        uses: oxygenxml/oxygen-script-comparison-action@v1.0.0
+      - name: Oxygen - Generate Documentation
+        uses: FloriNNic/oxygen-scripting-comparison-action@v2.0.0
+
         env:
           SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
         with:
-          firstBranch: master
-          secondBranch: ${{ github.event.pull_request.head.sha }}
+          schemaFile: personal.xsd
+          
+          
 
