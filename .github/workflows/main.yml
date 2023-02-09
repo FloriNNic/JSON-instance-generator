@@ -10,11 +10,7 @@ jobs:
     steps:
       - name: Oxygen - Generate Documentation
         uses: FloriNNic/oxygen-scripting-comparison-action@v2.0.0
-
         env:
           SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
         with:
           schemaFile: resources/personal.xsd
-          
-          
-
