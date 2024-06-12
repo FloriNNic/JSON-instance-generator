@@ -29,9 +29,19 @@ import org.everit.json.schema.regexp.Regexp;
 
 import com.mifmif.common.regex.Generex;
 
+/**
+ * JSON Data Generator
+ * 
+ * @author florin_nica
+ *
+ */
 public class JsonGeneratorEngine {
 	
 	StringBuilder builder = new StringBuilder();
+	
+	/**
+	 * The JSON Generator options.
+	 */
 	private JsonGeneratorOptions options;
 	
 	private String lastProperty;
