@@ -32,6 +32,9 @@ import com.mifmif.common.regex.Generex;
 public class JsonGeneratorEngine {
 	
 	StringBuilder builder = new StringBuilder();
+	/**
+	 * JSON Generator Options.
+	 */
 	private JsonGeneratorOptions options;
 	
 	private String lastProperty;
